@@ -6,6 +6,6 @@ namespace HomePainter.Abstract
 {
     public enum GraphicTool
     {
-        Dot, Pencil, Line, Rectangle, Ellipse
+        Pencil, Dot, Line, Rectangle, Ellipse
     }
 }

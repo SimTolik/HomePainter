@@ -15,10 +15,14 @@ namespace HomePainter
     public partial class MainForm : Form
     {
         bool drawingProcess = false;
+
         Bitmap snapshotDrawArea, tempDrawingArea;  //слои рисования
         Color brushColor, fillColor;
-        int lineWidth;
+        
         int xStartPoint, yStartPoint, xEndPoint, yEndPoint = 0;
+
+        int lineWidth;
+        private const int DEFAULT_LINE_WIDTH = 3;
 
         Pen drawingPen;
         Brush drawigBrush;
@@ -33,24 +37,23 @@ namespace HomePainter
         {
             InitializeComponent();
             
-            snapshotDrawArea = new Bitmap(panelDrawArea.ClientRectangle.Width, panelDrawArea.ClientRectangle.Height);   // Создание слоя для рисования
+            snapshotDrawArea = new Bitmap(panelDrawArea.ClientRectangle.Width, panelDrawArea.ClientRectangle.Height);   //Creating layer for drawing
             
-            g = Graphics.FromImage(snapshotDrawArea);   //заполнение слоя белым цветом
+            g = Graphics.FromImage(snapshotDrawArea);                                        //fill layer with white color for normal saving process
             g.FillRectangle(Brushes.White, 0, 0, panelDrawArea.ClientRectangle.Width, panelDrawArea.ClientRectangle.Height);
             g.Dispose();
-
-            lineWidth = 5;
+            
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            selectedTool = GraphicTool.Dot;
+            selectedTool = GraphicTool.Pencil;
 
-            brushSizeToolStripComboBox.SelectedIndex = 4; //Подход не самый лучший, но без ТЗ... :-)
-            lineWidth = 4;
+            brushSizeToolStripComboBox.SelectedIndex = 3;
+            
+            lineWidth = DEFAULT_LINE_WIDTH;
 
             //заполняем комбобоксы цветов
-
             string[] colorNames = Enum.GetNames(typeof(KnownColor));
 
             for (int i = 0; i < colorNames.Length; i++)
@@ -68,9 +71,8 @@ namespace HomePainter
                 }
             }
 
-            brushColorToolStripComboBox.SelectedIndex = 8; //значение Black
-            fillColorToolStripComboBox.SelectedIndex = 0;  //значение Transparent
-
+            brushColorToolStripComboBox.SelectedIndex = 8; //value Black
+            fillColorToolStripComboBox.SelectedIndex = 0;  //value Transparent
 
             //присваиваем дефолтные цвета кисти и заливки
             brushColor = Color.FromName(brushColorToolStripComboBox.Text);
@@ -83,7 +85,8 @@ namespace HomePainter
 
         private void panelDrawArea_MouseDown(object sender, MouseEventArgs e)
         {
-            drawingProcess = true;
+            drawingProcess = true;          //establish the beginning of drawing
+
             xStartPoint = e.X;
             yStartPoint = e.Y;
         }
@@ -93,7 +96,8 @@ namespace HomePainter
             {
                 xEndPoint = e.X;
                 yEndPoint = e.Y;
-                panelDrawArea.Invalidate();
+
+                panelDrawArea.Invalidate();         
                 panelDrawArea.Update();
             }
         }
@@ -101,10 +105,10 @@ namespace HomePainter
         {
             if (drawingProcess)
             {
-                    snapshotDrawArea = tempDrawingArea;
+                snapshotDrawArea = tempDrawingArea;         //all drawing process takes place on a temporary layer therefore at the end of drawing it is necessary to transfer it to the main layer
             }
 
-            drawingProcess = false;
+            drawingProcess = false;         //establish the end of drawing
         }
         
 
@@ -112,55 +116,55 @@ namespace HomePainter
         {
             if(drawingProcess)
             {
+                tempDrawingArea = (Bitmap)snapshotDrawArea.Clone();
+
+                g = Graphics.FromImage(tempDrawingArea);
+
+                drawingPen = new Pen(brushColor, lineWidth);
+                drawigBrush = new SolidBrush(fillColor);
+
                 switch (selectedTool)
                 {
                     case GraphicTool.Dot:
-                        tempDrawingArea = (Bitmap)snapshotDrawArea.Clone();
-                        g = Graphics.FromImage(tempDrawingArea);
+
                         drawigBrush = new SolidBrush(brushColor);
+
                         g.FillRectangle(drawigBrush, xStartPoint, yStartPoint, lineWidth, lineWidth);
-                        drawigBrush.Dispose();
+
                         e.Graphics.DrawImageUnscaled(tempDrawingArea, 0, 0);
-                        g.Dispose();
+
                         xStartPoint = xEndPoint;
                         yStartPoint = yEndPoint;
+
                         snapshotDrawArea = (Bitmap)tempDrawingArea.Clone();
+
                         break;
 
                     case GraphicTool.Pencil:
 
-                        tempDrawingArea = (Bitmap)snapshotDrawArea.Clone();
-                        g = Graphics.FromImage(tempDrawingArea);
-                        drawingPen = new Pen(brushColor, lineWidth);
                         g.DrawLine(drawingPen, xStartPoint, yStartPoint, xEndPoint, yEndPoint);
-                        drawingPen.Dispose();
+
                         e.Graphics.DrawImageUnscaled(tempDrawingArea, 0, 0);
-                        g.Dispose();
+
                         xStartPoint = xEndPoint;
                         yStartPoint = yEndPoint;
+
                         snapshotDrawArea = (Bitmap)tempDrawingArea.Clone();
+
                         break;
 
                     case GraphicTool.Line:
-                            tempDrawingArea = (Bitmap)snapshotDrawArea.Clone();
-                            g = Graphics.FromImage(tempDrawingArea);
-                            drawingPen = new Pen(brushColor, lineWidth);
-                            g.DrawLine(drawingPen, xStartPoint, yStartPoint, xEndPoint, yEndPoint);
-                            drawingPen.Dispose();
-                            e.Graphics.DrawImageUnscaled(tempDrawingArea, 0, 0);
-                            g.Dispose();
+
+                        g.DrawLine(drawingPen, xStartPoint, yStartPoint, xEndPoint, yEndPoint);
+
+                        e.Graphics.DrawImageUnscaled(tempDrawingArea, 0, 0);
 
                         break;
 
                     case GraphicTool.Rectangle:
 
-                            tempDrawingArea = (Bitmap)snapshotDrawArea.Clone();
-                            g = Graphics.FromImage(tempDrawingArea);
-                            drawingPen = new Pen(brushColor, lineWidth);
-                            drawigBrush = new SolidBrush(fillColor);
-
-                            //Реализация универсального рисования прямоугольника.
-                            if (xStartPoint < xEndPoint && yStartPoint < yEndPoint)
+                        //Realization of universal drawing of a rectangle. FillRectangle and DrawRectangle are doesn't understand negative values of the size.
+                        if (xStartPoint < xEndPoint && yStartPoint < yEndPoint)
                             {
 
                                 g.FillRectangle(drawigBrush, new Rectangle(xStartPoint, yStartPoint, xEndPoint - xStartPoint, yEndPoint - yStartPoint));
@@ -186,36 +190,32 @@ namespace HomePainter
                             
                             e.Graphics.DrawImageUnscaled(tempDrawingArea, 0, 0);
                         
-                            drawingPen.Dispose();
-                            drawigBrush.Dispose();
-                            g.Dispose();
-                        
                         break;
 
                     case GraphicTool.Ellipse:
-                            tempDrawingArea = (Bitmap)snapshotDrawArea.Clone();
-                            g = Graphics.FromImage(tempDrawingArea);
-                            drawingPen = new Pen(brushColor, lineWidth);
+
                             g.DrawEllipse(drawingPen, new Rectangle(xStartPoint, yStartPoint, xEndPoint - xStartPoint, yEndPoint - yStartPoint));
-                            drawigBrush = new SolidBrush(fillColor);
-                            g.FillEllipse(drawigBrush, new Rectangle(xStartPoint, yStartPoint, xEndPoint - xStartPoint, yEndPoint - yStartPoint)); //(myPen, xStartPoint, yStartPoint, xEndPoint - xStartPoint, yEndPoint - yStartPoint);
-                            drawingPen.Dispose();
-                            drawigBrush.Dispose();
+                            
+                            g.FillEllipse(drawigBrush, new Rectangle(xStartPoint, yStartPoint, xEndPoint - xStartPoint, yEndPoint - yStartPoint));
+                            
                             e.Graphics.DrawImageUnscaled(tempDrawingArea, 0, 0);
-                            g.Dispose();
+                            
                         break;
 
                     default:
                         break;
                 }
+
+                drawingPen.Dispose();
+                drawigBrush.Dispose();
+                g.Dispose();
             }
 
         }
 
 
-
-        #region Customize drawing tools and standard function  ----------------- Можно не смотреть 
-        private void newToolStripButton_Click(object sender, EventArgs e)   //создание нового документа
+        #region Customize drawing tools and standard function
+        private void newToolStripButton_Click(object sender, EventArgs e)                           //clear all drawing area
         {
             snapshotDrawArea = new Bitmap(panelDrawArea.ClientRectangle.Width, panelDrawArea.ClientRectangle.Height);
 
@@ -224,10 +224,11 @@ namespace HomePainter
             g.Dispose();
 
             tempDrawingArea = null;
+
             panelDrawArea.Refresh();
         }
 
-        private void brushSizeToolStripComboBox_TextChanged(object sender, EventArgs e) //изменение размера кисти
+        private void brushSizeToolStripComboBox_TextChanged(object sender, EventArgs e)             //change brush size
         {
             try
             {
@@ -237,27 +238,26 @@ namespace HomePainter
             catch (Exception)
             {
                 brushSizeToolStripComboBox.BackColor = Color.Red;
-                MessageBox.Show("Проверьте правильность ввода."); //Подобный вид уведомлений уже устарел. Использовал, как пример.
+                MessageBox.Show("Проверьте правильность ввода.");                                   //Similar type of notices already obsolete. I used that, as an example.
             }
-            
         }
 
-        private void brushColorToolStripComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void brushColorToolStripComboBox_SelectedIndexChanged(object sender, EventArgs e)   //change brush color
         {
             brushColor = Color.FromName(brushColorToolStripComboBox.Text);
-        }   //цвет кисти
+        }   
 
-        private void fillColorToolStripComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void fillColorToolStripComboBox_SelectedIndexChanged(object sender, EventArgs e)    //change fill color
         {
             fillColor = Color.FromName(fillColorToolStripComboBox.Text);
-        }   //цвет залики
+        }
 
-        private void exitToolStripButton_Click(object sender, EventArgs e)
+        private void exitToolStripButton_Click(object sender, EventArgs e)                          //close the program
         {
             this.Close();
-        }   //закрытие программы
+        }
 
-        private void openToolStripButton_Click(object sender, EventArgs e)
+        private void openToolStripButton_Click(object sender, EventArgs e)                          //open image
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Jpeg files|*.jpg|Bitmap files|*.bmp";
@@ -270,9 +270,9 @@ namespace HomePainter
                 g.DrawImageUnscaled(snapshotDrawArea, 0, 0);
                 g.Dispose();
             }
-        }   //открытие изображения
+        }
 
-        private void saveToolStripButton_Click(object sender, EventArgs e)
+        private void saveToolStripButton_Click(object sender, EventArgs e)                          //save image
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Jpeg files|*.jpg|Bitmap files|*.bmp";
@@ -289,22 +289,24 @@ namespace HomePainter
                 }
             }
             
-        }   //сохранение изображения
+        }
 
         #endregion
 
+
+
         #region Filter background execution
 
-        Invert invertFilter;    //объявление класса фильтра
-        private void toolStripButton1_Click(object sender, EventArgs e)     //применение фильтра
+        Invert invertFilter;                                                                        //filter class
+        private void toolStripButton1_Click(object sender, EventArgs e)                             //filter use
         {
             //указание параметров ProgressBar
             filterToolStripProgressBar.Minimum = 0;
             filterToolStripProgressBar.Maximum = panelDrawArea.ClientRectangle.Width;
 
             
-            filterToolStripProgressBar.Value = 0;   //сброс значения ProgressBar
-            invertToolStripButton.Enabled = false;  //блокировка кнопки фильтра
+                filterToolStripProgressBar.Value = 0;                                               //reset ProgressBar value
+                invertToolStripButton.Enabled = false;                                              //disable filter button
 
             //запуск фильтра
             invertFilter = new Invert();
@@ -318,8 +320,8 @@ namespace HomePainter
             
         }
 
-        private delegate void ButtonEnableCallback();       //делегат необходимый для управления активностью кнопки фильтра
-        private void InverFilter_OperationComplet()         //метод отображающий инвертированное изображение
+        private delegate void ButtonEnableCallback();                                               //delegate necessary for management of filte button status (Enable/Disable)
+        private void InverFilter_OperationComplet()                                                 //method that display inverted image
         {
             if(toolStrip.InvokeRequired)
             {
@@ -338,8 +340,8 @@ namespace HomePainter
             }
         }
 
-        private delegate void IncrementProgressBarCallback();   //делегат для отображения прогресса применения фильтра
-        private void ProgressBarIncrement()
+        private delegate void IncrementProgressBarCallback();                                       //delegate for display inverting progress
+        private void ProgressBarIncrement()                                                         //method for display inverting progress
         {
             if (statusStrip.InvokeRequired)
             {
@@ -350,12 +352,14 @@ namespace HomePainter
             {
                 filterToolStripProgressBar.Increment(1);
             }
-        }               //метод отображения состояния процесса наложения
+        }               
 
         #endregion
                 
-        #region Selecting drawing tool ----------------- Можно не смотреть
-        private void tsbLine_Click(object sender, EventArgs e)      //Кнопка рисования линии
+
+
+        #region Selecting drawing tool
+        private void tsbLine_Click(object sender, EventArgs e)
         {
             selectedTool = GraphicTool.Line;
             fillColorToolStripComboBox.Enabled = false;

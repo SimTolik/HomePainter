@@ -68,8 +68,8 @@
             this.openToolStripButton,
             this.saveToolStripButton,
             this.toolStripSeparator1,
-            this.dotToolStripButton,
             this.pencilToolStripButton,
+            this.dotToolStripButton,
             this.lineToolStripButton,
             this.rectangleToolStripButton,
             this.ellipseToolStripButton,
@@ -79,7 +79,7 @@
             this.exitToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1030, 25);
+            this.toolStrip.Size = new System.Drawing.Size(784, 25);
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -202,9 +202,9 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filterToolStripProgressBar});
-            this.statusStrip.Location = new System.Drawing.Point(0, 524);
+            this.statusStrip.Location = new System.Drawing.Point(0, 539);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1030, 22);
+            this.statusStrip.Size = new System.Drawing.Size(784, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -220,7 +220,7 @@
             this.panelDrawArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDrawArea.Location = new System.Drawing.Point(0, 25);
             this.panelDrawArea.Name = "panelDrawArea";
-            this.panelDrawArea.Size = new System.Drawing.Size(1030, 499);
+            this.panelDrawArea.Size = new System.Drawing.Size(784, 514);
             this.panelDrawArea.TabIndex = 3;
             this.panelDrawArea.Paint += new System.Windows.Forms.PaintEventHandler(this.panelDrawArea_Paint);
             this.panelDrawArea.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelDrawArea_MouseDown);
@@ -240,7 +240,7 @@
             this.fillColorToolStripComboBox});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1030, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(784, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -305,10 +305,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1030, 546);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.panelDrawArea);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
+            this.MaximumSize = new System.Drawing.Size(800, 600);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "MainForm";
             this.Text = "Home Paint";
             this.Load += new System.EventHandler(this.MainForm_Load);

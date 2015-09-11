@@ -15,40 +15,29 @@ namespace HomePainter.Filters
         public event worker OperationComplet;
         public event workerStatus OperationStatus;
         public Bitmap Image { get; set; }
-        public int Percentage { get; set; }
         public void Run()
         {
-            //X Axis
-            int x;
-            //Y Axis
-            int y;
-            //For the Width
-            for (x = 0; x <= Image.Width - 1; x++)
+            int x, y;   //image axis
+
+            for (x = 0; x <= Image.Width - 1; x++)      //processing width
             {
-                Thread.Sleep(1);
-                //Percentage = x / ((Image.Width - 1) / 100) ;
-                //Percentage = x;
+                Thread.Sleep(1);    
+
                 OperationStatus();
-                //For the Height
-                for (y = 0; y <= Image.Height - 1; y += 1)
+
+                for (y = 0; y <= Image.Height - 1; y += 1)      //processing height
                 {
-                    //The Old Color to Replace
-                    Color oldColor = Image.GetPixel(x, y);
-                    //The New Color to Replace the Old Color
-                    Color newColor;
-                    //Set the Color for newColor
-                    newColor = Color.FromArgb(oldColor.A, 255 - oldColor.R, 255 - oldColor.G, 255 - oldColor.B);
-                    //Replace the Old Color with the New Color
-                    Image.SetPixel(x, y, newColor);
+                    Color oldColor = Image.GetPixel(x, y);      //the Old Color to replace  
+                    
+                    Color newColor;                             //the New Color to replace the Old Color
+                    
+                    newColor = Color.FromArgb(oldColor.A, 255 - oldColor.R, 255 - oldColor.G, 255 - oldColor.B);    //set the Color for newColor
+                    
+                    Image.SetPixel(x, y, newColor);             //replace the Old Color with the New Color
                 }
             }
 
             OperationComplet();
-            
-
-            //return snapshotDrawArea;
-            //Return the Inverted Bitmap
-            //return bitmap;
         }
     }
 }

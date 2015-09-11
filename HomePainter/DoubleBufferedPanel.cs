@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace HomePainter
 {
-    public partial class DoubleBufferedPanel : Panel  //Создан для активации DoubleBuffered. Стандартный не позволял активировать данное св-во.
+    public partial class DoubleBufferedPanel : Panel  //It is created for activation of DoubleBuffered property. Visual Studio didn't allow to activate this by interface "Properties".
     {
         public DoubleBufferedPanel() 
         {

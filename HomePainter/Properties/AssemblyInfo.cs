@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HomePainter")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Home Painter")]
+[assembly: AssemblyDescription("Very lite version of MS Paint")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HomePainter")]
+[assembly: AssemblyCompany("SimHome")]
+[assembly: AssemblyProduct("Home Painter")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
